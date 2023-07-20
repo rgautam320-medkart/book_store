@@ -1,5 +1,10 @@
 const jwt = require('jsonwebtoken');
+
 const { PrismaClient } = require('@prisma/client');
+
+const Config = require('../config');
+const sendMessage = require('../slack');
+const Constants = require('../constants');
 
 const prisma = new PrismaClient();
 
@@ -8,7 +13,7 @@ const authenticateToken = async (req, res, next) => {
         const token = req.headers.authorization;
 
         if (token) {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const decoded = jwt.verify(token, Config.jwt_secret);
             const user = await prisma.user.findFirst({ where: { id: decoded.id } });
 
             if (!user) {
@@ -20,7 +25,7 @@ const authenticateToken = async (req, res, next) => {
 
         next();
     } catch (error) {
-        throw error;
+        sendMessage(Constants.SlackMessageType.ERROR, error.message, error.stack);
     }
 };
 

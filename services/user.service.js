@@ -1,6 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const Config = require('../config');
+const sendMessage = require('../slack');
+const Constants = require('../constants');
+
 class UserService {
     constructor(req) {
         this.req = req;
@@ -16,6 +20,7 @@ class UserService {
 
             return userData;
         } catch (error) {
+            sendMessage(Constants.SlackMessageType.ERROR, error.message);
             throw error;
         }
     }
@@ -26,6 +31,7 @@ class UserService {
 
             return users;
         } catch (error) {
+            sendMessage(Constants.SlackMessageType.ERROR, error.message);
             throw error;
         }
     }
@@ -40,6 +46,7 @@ class UserService {
 
             return user;
         } catch (error) {
+            sendMessage(Constants.SlackMessageType.ERROR, "Error In Registering User", error.stack);
             throw error;
         }
     }
@@ -54,7 +61,7 @@ class UserService {
                 throw new Error('Invalid username or password');
             }
 
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+            const token = jwt.sign({ id: user.id }, Config.jwt_secret, { expiresIn: '1d' });
 
             return {
                 username: user.username,
@@ -64,6 +71,7 @@ class UserService {
                 token: token,
             };
         } catch (error) {
+            sendMessage(Constants.SlackMessageType.ERROR, error.message);
             throw error;
         }
     }
@@ -93,6 +101,7 @@ class UserService {
                 message: "Password Changed Successfully",
             };
         } catch (error) {
+            sendMessage(Constants.SlackMessageType.ERROR, error.message);
             throw error;
         }
     }
@@ -112,6 +121,7 @@ class UserService {
 
             return user;
         } catch (error) {
+            sendMessage(Constants.SlackMessageType.ERROR, error.message);
             throw error;
         }
     }
@@ -135,6 +145,7 @@ class UserService {
 
             return { message: "User Deleted Successfully" };
         } catch (error) {
+            sendMessage(Constants.SlackMessageType.ERROR, error.message);
             throw error;
         }
     }
