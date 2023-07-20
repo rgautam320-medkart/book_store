@@ -26,6 +26,18 @@ const { authenticateToken } = require('./middleware/middleware');
 // Prisma client
 const prisma = new PrismaClient();
 
+// Add a Aiddleware to Prisma Client ...
+prisma.$use(async (params, next) => {
+    const before = Date.now();
+    const result = await next(params);
+    const after = Date.now();
+
+    console.log(
+        `Query ${params.model}.${params.action} took ${after - before}ms`
+    );
+    return result;
+});
+
 // Express app
 const app = express();
 

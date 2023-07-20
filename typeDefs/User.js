@@ -52,6 +52,10 @@ module.exports.typeDef = gql`
     message: String!
   }
 
+  type DeleteUserResponse {
+    message: String!
+  }
+
   type Query {
     me: UserResponse
     users: [UserResponse!]!
@@ -62,5 +66,6 @@ module.exports.typeDef = gql`
     login(username: String!, password: String!): LoginResponse
     updateUser(updateUser: UpdateUserInput) : UserResponse
     changePassword(password: String!, newPassword: String!): PasswordChangeResponse
+    deleteUser(userId: Int!): DeleteUserResponse
   }
 `;

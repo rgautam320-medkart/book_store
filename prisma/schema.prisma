@@ -11,14 +11,18 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  username   String   @unique
-  email      String
-  gender     String
-  age        Int
-  password   String
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  email    String
+  gender   String
+  age      Int
+  password String
+
   created_at DateTime @default(now())
+
   updated_at DateTime @default(now())
+
+  deleted_at DateTime?
 }
 
 model Author {

@@ -22,7 +22,7 @@ class UserService {
 
     async listUsers(prisma) {
         try {
-            const users = await prisma.user.findMany();
+            const users = await prisma.user.findMany({ where: { deleted_at: null } });
 
             return users;
         } catch (error) {
@@ -46,11 +46,7 @@ class UserService {
 
     async loginUser(prisma, { username, password }) {
         try {
-            const user = await prisma.user.findFirst({ where: { username } });
-
-            if (!user) {
-                throw new Error('Invalid username or password');
-            }
+            const user = await prisma.user.findFirstOrThrow({ where: { username: username, deleted_at: null } });
 
             const validPassword = await bcrypt.compare(password, user.password);
 
@@ -74,11 +70,7 @@ class UserService {
 
     async changePassword(prisma, { password, newPassword }) {
         try {
-            let user = await prisma.user.findFirst({ where: { id: this.req?.user?.id } });
-
-            if (!user) {
-                throw new Error('User not found');
-            }
+            let user = await prisma.user.findFirstOrThrow({ where: { id: this.req?.user?.id, deleted_at: null } });
 
             const validPassword = await bcrypt.compare(password, user.password);
 
@@ -107,11 +99,7 @@ class UserService {
 
     async updateUser(prisma, { email, gender, age }) {
         try {
-            let user = await prisma.user.findFirst({ where: { id: this.req?.user?.id } });
-
-            if (!user) {
-                throw new Error('User not found');
-            }
+            let user = await prisma.user.findFirstOrThrow({ where: { id: this.req?.user?.id, deleted_at: null } });
 
             user = await prisma.user.update(
                 {
@@ -123,6 +111,29 @@ class UserService {
             );
 
             return user;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async deleteUser(prisma, { userId }) {
+        try {
+            if (userId == this.req?.user?.id) {
+                throw new Error("You can't delete yourself");
+            }
+
+            let user = await prisma.user.findFirstOrThrow({ where: { id: userId, deleted_at: null } });
+
+            user = await prisma.user.update(
+                {
+                    where: { id: userId },
+                    data: {
+                        deleted_at: new Date()
+                    },
+                },
+            );
+
+            return { message: "User Deleted Successfully" };
         } catch (error) {
             throw error;
         }
