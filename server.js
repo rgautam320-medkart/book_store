@@ -1,7 +1,7 @@
-const prismaServer = require('./prisma');
+const prismaServer = require('./utils/prisma');
 
-const Constants = require('./constants');
-const sendMessage = require('./slack');
+const Constants = require('./utils/constants');
+const sendMessage = require('./utils/slack');
 
 process.on('unhandledRejection', function (err) {
     sendMessage(Constants.SlackMessageType.ERROR, `Uncaught Exception: ${err.message}`, err.stack);

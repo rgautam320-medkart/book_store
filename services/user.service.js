@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const Config = require('../config');
-const sendMessage = require('../slack');
-const Constants = require('../constants');
+const Config = require('../utils/config');
+const sendMessage = require('../utils/slack');
+const Constants = require('../utils/constants');
 
 class UserService {
     constructor(req) {

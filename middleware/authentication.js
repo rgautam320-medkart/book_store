@@ -4,7 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const Config = require('../config');
 const sendMessage = require('../slack');
-const Constants = require('../constants');
+const Constants = require('../utils/constants');
 
 const prisma = new PrismaClient();
 
