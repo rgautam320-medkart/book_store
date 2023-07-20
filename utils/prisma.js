@@ -1,14 +1,17 @@
 const { ApolloServer } = require('apollo-server-express');
 const { PrismaClient } = require('@prisma/client');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
 
-const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
+const { ApolloServerPluginLandingPageGraphQLPlayground, } = require('apollo-server-core');
 
 const app = require("./express");
 
 const resolvers = require('./resolvers');
 const typeDefs = require('./types');
 const Config = require('./config');
-const sendMessage = require('./slack');
+const { sendLog } = require('./utils');
+
+const directiveResolvers = require('../middleware/auth');
 
 // Prisma client
 const prisma = new PrismaClient();
@@ -19,7 +22,7 @@ prisma.$use(async (params, next) => {
     const result = await next(params);
     const after = Date.now();
 
-    sendMessage(Constants.SlackMessageType.LOG, `Query ${params.model}.${params.action} Took ${after - before}ms`);
+    sendLog(`Query ${params.model}.${params.action} Took ${after - before}ms`);
 
     return result;
 });
@@ -27,8 +30,11 @@ prisma.$use(async (params, next) => {
 // Apollo Server
 async function prismaServer() {
     const server = new ApolloServer({
-        typeDefs: typeDefs,
-        resolvers: resolvers,
+        schema: makeExecutableSchema({
+            typeDefs,
+            resolvers,
+            schemaDirectives: directiveResolvers,
+        }),
         context: ({ req, res }) => {
             return {
                 prisma,

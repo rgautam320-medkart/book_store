@@ -1,16 +1,15 @@
 const prismaServer = require('./utils/prisma');
 
-const Constants = require('./utils/constants');
-const sendMessage = require('./utils/slack');
+const { catchError } = require('./utils/utils');
 
-process.on('unhandledRejection', function (err) {
-    sendMessage(Constants.SlackMessageType.ERROR, `Uncaught Exception: ${err.message}`, err.stack);
+process.on('unhandledRejection', function (error) {
+    catchError(`Unhandled Exception: ${error.message}`, error);
 });
 
 prismaServer().catch((error) => {
-    sendMessage(Constants.SlackMessageType.ERROR, "Error starting the server", error);
+    catchError(`Error Starting the Server: ${error.message}`, error);
 });
 
-process.on('uncaughtException', function (err) {
-    sendMessage(Constants.SlackMessageType.ERROR, `Uncaught Exception: ${err.message}`, err.stack);
+process.on('uncaughtException', function (error) {
+    catchError(`Uncaught Exception: ${error.message}`, error);
 });

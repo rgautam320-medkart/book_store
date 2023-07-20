@@ -7,7 +7,7 @@ const slackToken = Config.slack_bot_token;
 
 const slackClient = new WebClient(slackToken);
 
-async function sendMessage(type, message, error = "...") {
+async function sendMessage(type, message, error = null) {
     try {
         await slackClient.chat.postMessage({
             channel: Config.slack_channel,
@@ -40,7 +40,7 @@ async function sendMessage(type, message, error = "...") {
                     text:
                     {
                         type: Constants.SlackMessageFormat.SECTION_TYPE,
-                        text: error
+                        text: error ? error?.toString() : "..."
                     }
                 },
             ]

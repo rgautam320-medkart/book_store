@@ -2,8 +2,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const Config = require('../utils/config');
-const sendMessage = require('../utils/slack');
-const Constants = require('../utils/constants');
+
+const { catchError } = require('../utils/utils');
 
 class UserService {
     constructor(req) {
@@ -20,8 +20,7 @@ class UserService {
 
             return userData;
         } catch (error) {
-            sendMessage(Constants.SlackMessageType.ERROR, error.message);
-            throw error;
+            catchError("Error In Getting User", error);
         }
     }
 
@@ -31,8 +30,7 @@ class UserService {
 
             return users;
         } catch (error) {
-            sendMessage(Constants.SlackMessageType.ERROR, error.message);
-            throw error;
+            catchError("Error In Listing Users", error);
         }
     }
 
@@ -46,8 +44,7 @@ class UserService {
 
             return user;
         } catch (error) {
-            sendMessage(Constants.SlackMessageType.ERROR, "Error In Registering User", error.stack);
-            throw error;
+            catchError("Error In Registering User", error);
         }
     }
 
@@ -71,8 +68,7 @@ class UserService {
                 token: token,
             };
         } catch (error) {
-            sendMessage(Constants.SlackMessageType.ERROR, error.message);
-            throw error;
+            catchError("Error In Logging In", error);
         }
     }
 
@@ -101,8 +97,7 @@ class UserService {
                 message: "Password Changed Successfully",
             };
         } catch (error) {
-            sendMessage(Constants.SlackMessageType.ERROR, error.message);
-            throw error;
+            catchError("Error In Change Password", error);
         }
     }
 
@@ -121,8 +116,7 @@ class UserService {
 
             return user;
         } catch (error) {
-            sendMessage(Constants.SlackMessageType.ERROR, error.message);
-            throw error;
+            catchError("Error In Updating User", error);
         }
     }
 
@@ -145,8 +139,7 @@ class UserService {
 
             return { message: "User Deleted Successfully" };
         } catch (error) {
-            sendMessage(Constants.SlackMessageType.ERROR, error.message);
-            throw error;
+            catchError("Error In Deleting User", error);
         }
     }
 }
