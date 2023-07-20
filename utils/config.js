@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const Config = {
+    debug: process.env.ENABLE_DEBUG ?? false,
     port: process.env.PORT ?? 4000,
 
     playground_url: process.env.PLAYGROUND_URL ?? 'http://127.0.0.1:4000',

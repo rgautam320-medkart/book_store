@@ -1,8 +1,8 @@
 const { gql } = require('apollo-server');
 
 module.exports.typeDef = gql`
-  directive @isAuthenticated on FIELD | FIELD_DEFINITION
-  directive @hasRole(role: String) on FIELD | FIELD_DEFINITION  
+  directive @isAuthenticated on FIELD_DEFINITION
+  directive @hasRole(role: String) on FIELD_DEFINITION  
 
   enum Gender {
     MALE
@@ -60,7 +60,7 @@ module.exports.typeDef = gql`
   }
 
   type Query {
-    me: UserResponse  @isAuthenticated
+    me: UserResponse  @isAuthenticated @hasRole(role: "ADMIN")
     users: [UserResponse!]!
   }
 

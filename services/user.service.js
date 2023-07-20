@@ -12,11 +12,7 @@ class UserService {
 
     async getMe(prisma) {
         try {
-            if (!this.req.user.id) {
-                throw new Error('Not Authenticated');
-            }
-
-            const userData = await prisma.user.findFirst({ where: { id: this.req.user.id } });
+            const userData = await prisma.user.findFirstOrThrow({ where: { id: this.req?.user?.id } });
 
             return userData;
         } catch (error) {

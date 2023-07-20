@@ -31,17 +31,34 @@ prisma.$use(async (params, next) => {
 async function prismaServer() {
     const server = new ApolloServer({
         schema: makeExecutableSchema({
-            typeDefs,
-            resolvers,
+            typeDefs: typeDefs,
+            resolvers: resolvers,
             schemaDirectives: directiveResolvers,
         }),
-        context: ({ req, res }) => {
+        context: ({ req }) => {
             return {
                 prisma,
-                req,
-                res,
+                req
             };
         },
+        formatError: (error) => {
+            const { message, locations, path } = error;
+
+            return {
+                status: 400,
+                code: error.extensions.code,
+                message: message,
+                path: path,
+                locations: locations
+            };
+        },
+        formatResponse: (response) => {
+            return {
+                data: response.data,
+                errors: response.errors,
+            }
+        },
+        debug: Config.debug,
         plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
     });
 

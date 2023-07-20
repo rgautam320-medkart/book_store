@@ -8,7 +8,7 @@ const catchError = (message, error = null) => {
 }
 
 const sendLog = (message) => {
-    sendMessage(Constants.SlackMessageType.LOG, message);
+    sendMessage(Constants.SlackMessageType.INFO, message);
 }
 
 const sendSuccessMessage = (message) => {
