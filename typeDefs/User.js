@@ -1,9 +1,6 @@
 const { gql } = require('apollo-server');
 
 module.exports.typeDef = gql`
-  directive @isAuthenticated on FIELD_DEFINITION
-  directive @hasRole(role: String) on FIELD_DEFINITION  
-
   enum Gender {
     MALE
     FEMALE
@@ -60,13 +57,13 @@ module.exports.typeDef = gql`
   }
 
   type Query {
-    me: UserResponse  @isAuthenticated @hasRole(role: "ADMIN")
+    me: UserResponse 
     users: [UserResponse!]!
   }
 
   type Mutation {
     register(registerUser: RegisterUserInput): UserResponse
-    login(username: String!, password: String!): LoginResponse  @isAuthenticated
+    login(username: String!, password: String!): LoginResponse  
     updateUser(updateUser: UpdateUserInput) : UserResponse
     changePassword(password: String!, newPassword: String!): PasswordChangeResponse
     deleteUser(userId: Int!): DeleteUserResponse

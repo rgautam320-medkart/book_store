@@ -20,21 +20,57 @@ model User {
 
   created_at DateTime @default(now())
 
-  updated_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   deleted_at DateTime?
+
+  booksCreated Book[] @relation("BookCreatedBy")
+  booksUpdated Book[] @relation("BookUpdatedBy")
+  booksDeleted Book[] @relation("BookDeletedBy")
+
+  authorsCreated Author[] @relation("AuthorCreatedBy")
+  authorsUpdated Author[] @relation("AuthorUpdatedBy")
+  authorsDeleted Author[] @relation("AuthorDeletedBy")
 }
 
 model Author {
-  id    Int            @id @default(autoincrement())
-  name  String
-  books BookToAuthor[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  email        String         @unique
+  dob          DateTime?
+  language     String
+  biography    String?
+  website      String?
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  deleted_at   DateTime?
+  created_by   Int
+  updated_by   Int?
+  deleted_by   Int?
+  createdBy    User           @relation("AuthorCreatedBy", fields: [created_by], references: [id])
+  updatedBy    User?          @relation("AuthorUpdatedBy", fields: [updated_by], references: [id])
+  deletedBy    User?          @relation("AuthorDeletedBy", fields: [deleted_by], references: [id])
+  BookToAuthor BookToAuthor[]
 }
 
 model Book {
-  id    Int            @id @default(autoincrement())
-  title String
-  books BookToAuthor[]
+  id            Int            @id @default(autoincrement())
+  title         String
+  author        String
+  description   String
+  publishedYear Int
+  isbn          String
+  genre         String
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  deleted_at    DateTime?
+  created_by    Int
+  updated_by    Int?
+  deleted_by    Int?
+  createdBy     User           @relation("BookCreatedBy", fields: [created_by], references: [id])
+  updatedBy     User?          @relation("BookUpdatedBy", fields: [updated_by], references: [id])
+  deletedBy     User?          @relation("BookDeletedBy", fields: [deleted_by], references: [id])
+  BookToAuthor  BookToAuthor[]
 }
 
 model BookToAuthor {
