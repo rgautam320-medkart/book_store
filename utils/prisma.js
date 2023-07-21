@@ -2,16 +2,12 @@ const { ApolloServer } = require('apollo-server-express');
 const { PrismaClient } = require('@prisma/client');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
 
-const { ApolloServerPluginLandingPageGraphQLPlayground, } = require('apollo-server-core');
-
 const app = require("./express");
 
 const resolvers = require('./resolvers');
 const typeDefs = require('./types');
 const Config = require('./config');
 const { sendLog } = require('./utils');
-
-const directiveResolvers = require('../middleware/auth');
 
 // Prisma client
 const prisma = new PrismaClient();
@@ -33,7 +29,6 @@ async function prismaServer() {
         schema: makeExecutableSchema({
             typeDefs: typeDefs,
             resolvers: resolvers,
-            schemaDirectives: directiveResolvers,
         }),
         context: ({ req }) => {
             return {
@@ -59,7 +54,6 @@ async function prismaServer() {
             }
         },
         debug: Config.debug,
-        plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
     });
 
     await server.start({
@@ -71,7 +65,7 @@ async function prismaServer() {
 
     // Start the server
     app.listen(Config.port, () => {
-        console.log(`Server is Running on ${Config.port}`);
+        console.log(`🚀 Server is Running on ${Config.port} 🚀`);
     });
 }
 
