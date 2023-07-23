@@ -37,7 +37,7 @@ class AuthorService {
     async createAuthor({ name, email, dob, language, biography, website }) {
         try {
             const author = await prisma.author.create({
-                data: { name, email, dob: new Date(dob), language, biography, website, created_by: 1 },
+                data: { name, email, dob: new Date(dob), language, biography, website, created_by: this.req?.user?.id },
                 include: { createdBy: true }
             });
 
@@ -53,7 +53,7 @@ class AuthorService {
         try {
             const author = await prisma.author.update({
                 where: { id: authorId },
-                data: { name, dob: new Date(dob), language, biography, website, updated_by: 1 },
+                data: { name, dob: new Date(dob), language, biography, website, updated_by: this.req?.user?.id },
                 include: { createdBy: true }
             });
 
@@ -69,7 +69,7 @@ class AuthorService {
         try {
             await prisma.author.update({
                 where: { id: authorId },
-                data: { deleted_at: new Date(), deleted_by: 1 },
+                data: { deleted_at: new Date(), deleted_by: this.req?.user?.id },
             });
 
             return {

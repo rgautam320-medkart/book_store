@@ -59,7 +59,6 @@ class BookService {
 
             return books;
         } catch (error) {
-            console.log(error);
             catchError("Error In Listing Books", error);
         }
     }
@@ -91,8 +90,6 @@ class BookService {
             book.created_by = book.createdBy?.username;
             book.authors = book.BookToAuthor;
 
-            console.log(JSON.stringify(book));
-
             return book;
         } catch (error) {
             catchError("Error In Creating Book", error);
@@ -101,13 +98,31 @@ class BookService {
 
     async updateBook({ bookId, title, description, published_year, isbn, genre, authors }) {
         try {
-            const book = await prisma.book.update({
+            const bookQuery = await prisma.book.update({
                 where: { id: bookId },
-                data: { title, description, published_year, isbn, genre, updated_by: 1 },
-                include: { createdBy: true }
+                data: { title, description, published_year, isbn, genre, updated_by: this.req?.user?.id },
+            });
+
+            await prisma.$transaction(
+                authors.map((author) => prisma.bookToAuthor.create({ data: { bookId: bookQuery.id, authorId: author } }))
+            );
+
+            let book = await prisma.book.findFirstOrThrow({
+                where: { id: bookQuery.id },
+                include: {
+                    BookToAuthor: {
+                        select: {
+                            author: true
+                        }
+                    },
+                    createdBy: {
+                        select: { username: true }
+                    }
+                }
             });
 
             book.created_by = book.createdBy?.username;
+            book.authors = book.BookToAuthor;
 
             return book;
         } catch (error) {
@@ -119,7 +134,7 @@ class BookService {
         try {
             await prisma.book.update({
                 where: { id: bookId },
-                data: { deleted_at: new Date(), deleted_by: 1 },
+                data: { deleted_at: new Date(), deleted_by: this.req?.user?.id },
             });
 
             return {
