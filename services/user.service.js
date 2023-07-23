@@ -4,13 +4,14 @@ const jwt = require('jsonwebtoken');
 const Config = require('../utils/config');
 
 const { catchError } = require('../utils/utils');
+const prisma = require('../utils/prismaClient');
 
 class UserService {
     constructor(req) {
         this.req = req;
     }
 
-    async getMe(prisma) {
+    async getMe() {
         try {
             const userData = await prisma.user.findFirstOrThrow({ where: { id: this.req?.user?.id } });
 
@@ -20,7 +21,7 @@ class UserService {
         }
     }
 
-    async listUsers(prisma) {
+    async listUsers() {
         try {
             const users = await prisma.user.findMany({ where: { deleted_at: null } });
 
@@ -30,7 +31,7 @@ class UserService {
         }
     }
 
-    async registerUser(prisma, { username, email, gender, age, password }) {
+    async registerUser({ username, email, gender, age, password }) {
         try {
             const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -44,7 +45,7 @@ class UserService {
         }
     }
 
-    async loginUser(prisma, { username, password }) {
+    async loginUser({ username, password }) {
         try {
             const user = await prisma.user.findFirstOrThrow({ where: { username: username, deleted_at: null } });
 
@@ -68,7 +69,7 @@ class UserService {
         }
     }
 
-    async changePassword(prisma, { password, newPassword }) {
+    async changePassword({ password, newPassword }) {
         try {
             let user = await prisma.user.findFirstOrThrow({ where: { id: this.req?.user?.id, deleted_at: null } });
 
@@ -97,7 +98,7 @@ class UserService {
         }
     }
 
-    async updateUser(prisma, { email, gender, age }) {
+    async updateUser({ email, gender, age }) {
         try {
             let user = await prisma.user.findFirstOrThrow({ where: { id: this.req?.user?.id, deleted_at: null } });
 
@@ -116,7 +117,7 @@ class UserService {
         }
     }
 
-    async deleteUser(prisma, { userId }) {
+    async deleteUser({ userId }) {
         try {
             if (userId == this.req?.user?.id) {
                 throw new Error("You can't delete yourself");

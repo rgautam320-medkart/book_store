@@ -54,23 +54,22 @@ model Author {
 }
 
 model Book {
-  id            Int            @id @default(autoincrement())
-  title         String
-  author        String
-  description   String
-  publishedYear Int
-  isbn          String
-  genre         String
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
-  deleted_at    DateTime?
-  created_by    Int
-  updated_by    Int?
-  deleted_by    Int?
-  createdBy     User           @relation("BookCreatedBy", fields: [created_by], references: [id])
-  updatedBy     User?          @relation("BookUpdatedBy", fields: [updated_by], references: [id])
-  deletedBy     User?          @relation("BookDeletedBy", fields: [deleted_by], references: [id])
-  BookToAuthor  BookToAuthor[]
+  id             Int            @id @default(autoincrement())
+  title          String
+  description    String
+  published_year Int
+  isbn           String
+  genre          String
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  deleted_at     DateTime?
+  created_by     Int
+  updated_by     Int?
+  deleted_by     Int?
+  createdBy      User           @relation("BookCreatedBy", fields: [created_by], references: [id])
+  updatedBy      User?          @relation("BookUpdatedBy", fields: [updated_by], references: [id])
+  deletedBy      User?          @relation("BookDeletedBy", fields: [deleted_by], references: [id])
+  BookToAuthor   BookToAuthor[]
 }
 
 model BookToAuthor {

@@ -1,19 +1,34 @@
-const directiveResolvers = {
-    isAuthenticated: (next, source, context) => {
-        // Implement authentication logic here
-        if (!context.user) {
-            throw new Error('Unauthorized! You must be logged in.');
-        }
+const jwt = require('jsonwebtoken');
+const Config = require('../utils/config');
+const { noAuthMethods } = require('./paths');
+const { PrismaClient } = require('@prisma/client');
+
+async function jwtMiddleware(req, res, next) {
+    if (req.method == 'GET' || !req.operationName) {
         return next();
-    },
-    hasRole: (next, source, { role }, context) => {
-        // Implement role-based authorization logic here
-        const userRole = context.user.role; // Assuming the user role is available in the context
-        if (role !== userRole) {
-            throw new Error(`Unauthorized! You must have role: ${role}`);
-        }
+    }
+
+    if (req.operationName && noAuthMethods.includes(req.operationName)) {
         return next();
-    },
+    }
+
+    const token = req.header('Authorization');
+
+    if (!token) {
+        return res.status(401).json({ error: 'No Token Provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, Config.jwt_secret);
+
+        const user = await new PrismaClient().user.findFirstOrThrow({ where: { id: decoded.id } });
+
+        req.user = user;
+
+        return next();
+    } catch (error) {
+        return res.status(401).json({ error: 'Invalid Token' });
+    }
 }
 
-module.exports = directiveResolvers;
+module.exports = jwtMiddleware;

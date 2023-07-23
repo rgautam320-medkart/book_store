@@ -2,15 +2,15 @@ const UserService = require('../services/user.service');
 
 const resolvers = {
     Query: {
-        me: async (_, __, { prisma, req }) => await new UserService(req).getMe(prisma),
-        users: async (_, __, { prisma, req }) => await new UserService(req).listUsers(prisma),
+        me: async (_, __, { req }) => await new UserService(req).getMe(),
+        users: async (_, __, { req }) => await new UserService(req).listUsers(),
     },
     Mutation: {
-        register: async (_, { registerUser }, { prisma, req }) => await new UserService(req).registerUser(prisma, registerUser),
-        login: async (_, { username, password }, { prisma, req }) => await new UserService(req).loginUser(prisma, { username, password }),
-        updateUser: async (_, { updateUser }, { prisma, req }) => await new UserService(req).updateUser(prisma, updateUser),
-        changePassword: async (_, { password, newPassword }, { prisma, req }) => await new UserService(req).changePassword(prisma, { password, newPassword }),
-        deleteUser: async (_, { userId }, { prisma, req }) => await new UserService(req).deleteUser(prisma, { userId }),
+        register: async (_, { registerUser }, { req }) => await new UserService(req).registerUser(registerUser),
+        login: async (_, { username, password }, { req }) => await new UserService(req).loginUser({ username, password }),
+        updateUser: async (_, { updateUser }, { req }) => await new UserService(req).updateUser(updateUser),
+        changePassword: async (_, { password, newPassword }, { req }) => await new UserService(req).changePassword({ password, newPassword }),
+        deleteUser: async (_, { userId }, { req }) => await new UserService(req).deleteUser({ userId }),
     },
 };
 

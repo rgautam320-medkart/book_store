@@ -1,3 +1,4 @@
+const prisma = require('../utils/prismaClient');
 const { catchError } = require('../utils/utils');
 
 class AuthorService {
@@ -5,7 +6,7 @@ class AuthorService {
         this.req = req;
     }
 
-    async getAuthor(prisma, { authorId }) {
+    async getAuthor({ authorId }) {
         try {
             let authorData = await prisma.author.findFirstOrThrow({ where: { id: authorId, deleted_at: null }, include: { createdBy: true, updatedBy: true } });
 
@@ -33,7 +34,7 @@ class AuthorService {
         }
     }
 
-    async createAuthor(prisma, { name, email, dob, language, biography, website }) {
+    async createAuthor({ name, email, dob, language, biography, website }) {
         try {
             const author = await prisma.author.create({
                 data: { name, email, dob: new Date(dob), language, biography, website, created_by: 1 },
@@ -48,7 +49,7 @@ class AuthorService {
         }
     }
 
-    async updateAuthor(prisma, { authorId, name, dob, language, biography, website }) {
+    async updateAuthor({ authorId, name, dob, language, biography, website }) {
         try {
             const author = await prisma.author.update({
                 where: { id: authorId },
@@ -64,7 +65,7 @@ class AuthorService {
         }
     }
 
-    async deleteAuthor(prisma, { authorId }) {
+    async deleteAuthor({ authorId }) {
         try {
             await prisma.author.update({
                 where: { id: authorId },

@@ -1,4 +1,4 @@
-const prismaServer = require('./utils/prisma');
+const prismaServer = require('./utils/prismaServer');
 
 const { catchError } = require('./utils/utils');
 

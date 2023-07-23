@@ -9,18 +9,6 @@ module.exports.typeDef = gql`
     NEPALI
   }
 
-  type Author {
-    id: Int!
-    name: String!
-    email: String!
-    dob: String
-    language: Language!
-    biography: String
-    website: String
-    created_at: String!
-    updated_at: String
-  }
-
   input CreateAuthorInput {
     name: String!
     email: String!

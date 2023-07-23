@@ -1,17 +1,14 @@
+const BookService = require("../services/book.service");
+
 const resolvers = {
     Query: {
-        books: async (_, __, { prisma }) => {
-            const books = await prisma.book.findMany();
-            return books;
-        },
+        book: async (_, { bookId }, { req }) => await new BookService(req).getBook({ bookId }),
+        books: async (_, __, { req }) => await new BookService(req).listBooks(),
     },
-    Book: {
-        authors: async (parent, _, { prisma }) => {
-            const authors = await prisma.bookToAuthor
-                .findUnique({ where: { bookId: parent.id } })
-                .author();
-            return authors;
-        },
+    Mutation: {
+        createBook: async (_, { createBook }, { req },) => await new BookService(req).createBook(createBook),
+        updateBook: async (_, { bookId, updateBook }, { req },) => await new BookService(req).updateBook({ bookId, ...updateBook }),
+        deleteBook: async (_, { bookId }, { req },) => await new BookService(req).deleteBook({ bookId }),
     },
 };
 
