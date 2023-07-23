@@ -8,7 +8,7 @@ GraphQL API for a Book Store
 
 ## Accessing the graph
 
-🛰 You can send operations to this graph at `{{ graph.url.endpoint }}`
+🛰 You can send operations to this graph at `http://localhost:4000/graphql`
 
 ## How to authenticate to this graph
 Use Register and Login to Get the Token to Authenticate.
