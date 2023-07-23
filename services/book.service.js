@@ -148,6 +148,26 @@ class BookService {
             catchError("Error In Deleting Book", error);
         }
     }
+
+    async getBooksByAuthor({ authorId }) {
+        try {
+            const books = await prisma.bookToAuthor.findMany({
+                where: { authorId: authorId },
+                select: {
+                    book: true
+                }
+            });
+
+            let bookResponse = [];
+            books.forEach(book => {
+                bookResponse.push(book.book);
+            });
+
+            return bookResponse;
+        } catch (error) {
+            catchError("Error In Getting Books by Author", error);
+        }
+    }
 }
 
 module.exports = BookService;

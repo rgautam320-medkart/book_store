@@ -1,6 +1,6 @@
 # Getting started
 
-Welcome to the **Book Store** API! 🎉 Get familiar with available objects or try querying this graph using [Explorer](https://studio.apollographql.com/graph/Book-Store/variant/current/explorer).
+Welcome to the **Book Store** API! 🎉 Get familiar with available objects or try querying this graph using [Explorer](https://studio.apollographql.com/graph/Book-Store-V2/variant/current/explorer).
 
 ## What this graph is all about
 

@@ -4,6 +4,7 @@ const resolvers = {
     Query: {
         book: async (_, { bookId }, { req }) => await new BookService(req).getBook({ bookId }),
         books: async (_, __, { req }) => await new BookService(req).listBooks(),
+        getBooksByAuthor: async (_, { authorId }, { req }) => await new BookService(req).getBooksByAuthor(authorId),
     },
     Mutation: {
         createBook: async (_, { createBook }, { req },) => await new BookService(req).createBook(createBook),

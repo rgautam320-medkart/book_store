@@ -48,6 +48,7 @@ module.exports.typeDef = gql`
   type Query {
     books: [BookResponse!]! 
     book(bookId: Int!): BookResponse!
+    getBooksByAuthor(authorId: Int!): [BookResponse!]!
   }
 
   type Mutation {
