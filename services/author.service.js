@@ -19,7 +19,7 @@ class AuthorService {
         }
     }
 
-    async listAuthors(prisma) {
+    async listAuthors() {
         try {
             const authors = await prisma.author.findMany({ where: { deleted_at: null }, include: { createdBy: true, updatedBy: true } });
 
