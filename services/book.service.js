@@ -98,17 +98,21 @@ class BookService {
 
     async updateBook({ bookId, title, description, published_year, isbn, genre, authors }) {
         try {
-            const bookQuery = await prisma.book.update({
+            await prisma.book.update({
                 where: { id: bookId },
                 data: { title, description, published_year, isbn, genre, updated_by: this.req?.user?.id },
             });
 
             await prisma.$transaction(
-                authors.map((author) => prisma.bookToAuthor.create({ data: { bookId: bookQuery.id, authorId: author } }))
+                authors.map((author) => prisma.bookToAuthor.deleteMany({ where: { bookId: bookId, authorId: author } }))
+            );
+
+            await prisma.$transaction(
+                authors.map((author) => prisma.bookToAuthor.create({ data: { bookId: bookId, authorId: author } }))
             );
 
             let book = await prisma.book.findFirstOrThrow({
-                where: { id: bookQuery.id },
+                where: { id: bookId },
                 include: {
                     BookToAuthor: {
                         select: {

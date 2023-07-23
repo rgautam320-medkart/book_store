@@ -41,8 +41,8 @@ module.exports.typeDef = gql`
     description: String!
     published_year: Int!
     isbn: String!
-    genre: Genre!
-    author: [Int!]!
+    genre: Genre! 
+    authors: [Int!]!
   }
 
   type Query {
